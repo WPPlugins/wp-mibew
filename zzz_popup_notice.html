@@ -1,0 +1,73 @@
+<style>
+    .app_hide {display:none;}
+    .app_positive_button {
+        color:green !important;
+        font-weight:bolder!important;
+    }
+
+    /* fix for the wrong order of dlg buttons http://bugs.jqueryui.com/ticket/4529 */
+    .ui-dialog .ui-dialog-buttonpane{text-align:right;}
+    .ui-dialog .ui-dialog-buttonpane button{float:none;}    
+</style>
+
+<div id="manage_languages_dlg" class="app_hide" title="%%PLUGIN_NAME%%">
+    <div class="manage_languages_dlg_container">
+        <p>Thank you for installing/upgrading %%PLUGIN_NAME%%. </p>
+        <p>%%newsletter_form%%</p>
+
+        <p>
+            <label for="app_do_not_show_again">
+                <input id="app_do_not_show_again" type="checkbox" value="1" />
+                    Don't show this message again.
+            </label>
+        </p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        //$("#tabs").tabs();
+        $('#app_do_not_show_again').click(function (){
+           if ($(this).is(':checked')) {
+               $.post('%%AJAX_LINK%%', { dismiss : 1 });
+           } else {
+               $.post('%%AJAX_LINK%%', { dismiss : 0 });
+           }
+        });
+
+        var dlg = $('#manage_languages_dlg').dialog({
+            modal: true,
+            //autoOpen: false,
+            autoOpen: '%%AUTO_OPEN%%' == 1 ? true : false,
+            resizable: true,
+            closeOnEscape: false,
+            width: 525,
+            height: 425,
+            buttons: {
+                'OK': {
+                    text: 'OK (Hide)',
+                    'class': 'app_positive_button ui-icon-trash',
+                    click: function() {
+                        //$('.manage_languages_dlg_container', $('#manage_languages_dlg')).html('Loading ... Please Wait ...');
+                        //window.location = '%%DASHBOARD_LINK%%';
+                        $(this).dialog('close');
+                    }
+                },
+
+                'Ask Later': function() {
+                    $.post('%%AJAX_LINK%%', { dismiss : 1, remind_later : 1 });
+                    $(this).dialog('close');
+                }/*,
+
+                "Don't show again": function() {
+                    $.post('%%AJAX_LINK%%', { dismiss : 1 });
+
+                    $(this).dialog('close');
+                }*/
+            },
+            open: function(event, ui) {
+
+            }
+        });
+    });
+</script>
